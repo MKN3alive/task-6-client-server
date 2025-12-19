@@ -15,3 +15,118 @@
 2. Примеры клиентских приложений, обращающихся к системе через API и через CLI
 
 Мотивация: предложенная задача - прообраз MLOps системы и inference server'а, где модели МО заменены функциями, а операция обучения заменена на обновление функции.
+
+---
+
+## Содержимое проекта
+
+* `server.py` — сервер FastAPI с сохранением функций в `functions.json`
+* `cli.py` — клиент через консоль
+* `functions.json` — файл для хранения функций (создаётся автоматически)
+* `test_api.py` — пример работы через Python API
+
+---
+
+## Запуск сервера
+
+```powershell
+uvicorn server:app --reload
+```
+
+Сервер будет доступен по адресу: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+Swagger UI для тестирования: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+---
+
+## Работа через CLI
+
+### Создать функцию
+
+```powershell
+python cli.py create --name linear --expr "a*x + b" --param a=2 --param b=1
+python cli.py create --name quadratic --expr "a*x**2 + b*x + c" --param a=1 --param b=-2 --param c=1
+python cli.py create --name sin_wave --expr "a*math.sin(b*x + c)" --param a=2 --param b=1 --param c=0
+```
+
+### Просмотреть список функций
+
+```powershell
+python cli.py list
+```
+
+### Вычислить функцию
+
+```powershell
+python cli.py compute --name linear --x 3
+python cli.py compute --name quadratic --x 3
+python cli.py compute --name sin_wave --x 1.57
+```
+
+### Удалить функцию
+
+```powershell
+python cli.py delete --name linear
+```
+
+---
+
+## Работа через API (Python)
+
+Пример работы напрямую с сервером через requests (файл `api_test.py`):
+
+```python
+import requests
+
+BASE = "http://127.0.0.1:8000"
+
+# Создание функции
+data = {
+    "name": "quadratic",
+    "expression": "a * x**2 + b * x + c",
+    "params": {"a":1, "b":-2, "c":1}
+}
+r = requests.post(f"{BASE}/functions", json=data)
+print("Created:", r.json())
+
+# Вычисление функции
+r2 = requests.post(f"{BASE}/functions/by-name/quadratic/compute", json={"x": 3})
+print("Computed:", r2.json())
+
+# Получение списка функций
+r3 = requests.get(f"{BASE}/functions")
+print("List:", r3.json())
+```
+
+---
+
+## Примечания
+
+* Все функции сохраняются в `functions.json` и будут доступны после перезапуска сервера
+* Вход функции всегда один — `x`
+* Выход функции всегда один — `y`
+* Можно обращаться к функциям по имени или по ID
+
+---
+
+## Пример структуры данных функции
+
+```json
+{
+  "id": "6ee79f9e-b5c5-420c-b3ff-cd733c53ab7c",
+  "name": "linear",
+  "expression": "a * x + b",
+  "params": {
+    "a": 2,
+    "b": 1
+  },
+  "inputs": [
+    "x"
+  ],
+  "outputs": [
+    "y"
+  ]
+}
+```
+
+---

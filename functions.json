@@ -1,0 +1,31 @@
+[
+  {
+    "name": "linear",
+    "expression": "a * x + b",
+    "params": {
+      "a": 2.0,
+      "b": 1.0
+    },
+    "id": "6ee79f9e-b5c5-420c-b3ff-cd733c53ab7c"
+  },
+  {
+    "name": "sin_wave",
+    "expression": "a * math.sin(b * x + c)",
+    "params": {
+      "a": 2.0,
+      "b": 1.0,
+      "c": 0.0
+    },
+    "id": "e78e8ccd-f99b-4db1-b621-abed6fd2fa52"
+  },
+  {
+    "name": "quadratic",
+    "expression": "a * x**2 + b * x + c",
+    "params": {
+      "a": 1.0,
+      "b": -2.0,
+      "c": 1.0
+    },
+    "id": "43f34d5f-8549-4455-85ef-b22a25e560a2"
+  }
+]
