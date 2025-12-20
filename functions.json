@@ -1,14 +1,5 @@
 [
   {
-    "name": "linear",
-    "expression": "a * x + b",
-    "params": {
-      "a": 2.0,
-      "b": 1.0
-    },
-    "id": "6ee79f9e-b5c5-420c-b3ff-cd733c53ab7c"
-  },
-  {
     "name": "sin_wave",
     "expression": "a * math.sin(b * x + c)",
     "params": {
@@ -27,5 +18,14 @@
       "c": 1.0
     },
     "id": "43f34d5f-8549-4455-85ef-b22a25e560a2"
+  },
+  {
+    "name": "linear",
+    "expression": "a*x + b",
+    "params": {
+      "a": 2.0,
+      "b": 1.0
+    },
+    "id": "25f7c7ba-3852-47ab-9347-f3b48c90ed24"
   }
 ]

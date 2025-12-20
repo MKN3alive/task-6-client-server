@@ -27,6 +27,25 @@
 
 ---
 
+## Виртуальное окружение и зависимости
+
+Все зависимости собраны в requirements.txt
+
+```powershell
+#создание виртуалного окружения
+python -m venv venv
+
+#linux
+source venv/bin/activate
+#windows
+venv\Scripts\activate
+
+#установка зависимостей
+pip install -r requirements.txt
+```
+
+---
+
 ## Запуск сервера
 
 ```powershell
