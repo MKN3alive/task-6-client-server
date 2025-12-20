@@ -50,6 +50,35 @@ def delete(args):
     r = requests.delete(url)
     print(r.json())
 
+def update(args):
+    data = {}
+
+    if args.name_new:
+        data["name"] = args.name_new
+    if args.expr:
+        data["expression"] = args.expr
+    if args.param:
+        params = {}
+        for p in args.param:
+            if "=" not in p:
+                raise ValueError("Parameter must be in form key=value")
+            k, v = p.split("=", 1)
+            params[k] = float(v)
+        data["params"] = params
+
+    if not data:
+        raise ValueError("Nothing to update")
+
+    if args.name:
+        url = f"{BASE_URL}/functions/by-name/{args.name}"
+    elif args.id:
+        url = f"{BASE_URL}/functions/{args.id}"
+    else:
+        raise ValueError("Specify --name or --id")
+
+    r = requests.put(url, json=data)
+    print(r.json())
+
 
 parser = argparse.ArgumentParser(description="CLI client for function server")
 sub = parser.add_subparsers(dest="command", required=True)
@@ -76,6 +105,21 @@ p_compute.add_argument("--x", type=float, required=True)
 p_compute.add_argument("--id")
 p_compute.add_argument("--name")
 p_compute.set_defaults(func=compute)
+
+# ---- update ----
+p_update = sub.add_parser("update", help="Update function")
+p_update.add_argument("--id")
+p_update.add_argument("--name", help="Existing function name")
+p_update.add_argument("--name-new", help="New function name")
+p_update.add_argument("--expr", help="New expression")
+p_update.add_argument(
+    "--param",
+    action="append",
+    default=[],
+    help="key=value (can be repeated, replaces params)"
+)
+p_update.set_defaults(func=update)
+
 
 # ---- delete ----
 p_delete = sub.add_parser("delete", help="Delete function")

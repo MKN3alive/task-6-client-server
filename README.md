@@ -82,6 +82,19 @@ python cli.py compute --name quadratic --x 3
 python cli.py compute --name sin_wave --x 1.57
 ```
 
+### Обновить функцию
+
+```powershell
+#обновить выражение
+python cli.py update --name linear --expr "a*x*x + b"
+
+#обновить параметры
+python cli.py update --name linear --param a=2 --param b=5
+
+#обновить название
+python cli.py update --name linear --name-new non_linear
+```
+
 ### Удалить функцию
 
 ```powershell

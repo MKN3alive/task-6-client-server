@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Dict, List
+from typing import Dict, List, Optional
 import math
 import uuid
 import json
@@ -16,6 +16,11 @@ class FunctionCreate(BaseModel):
     name: str
     expression: str
     params: Dict[str, float]
+
+class FunctionUpdate(BaseModel):
+    name: Optional[str] = None
+    expression: Optional[str] = None
+    params: Optional[Dict[str, float]] = None
 
 
 class Function(FunctionCreate):
@@ -104,6 +109,7 @@ async def get_function(fid: str):
         "outputs": ["y"]
     }
 
+
 @app.get("/functions/by-name/{name}")
 async def get_function_by_name(name: str):
     if name not in functions_by_name:
@@ -119,6 +125,40 @@ async def get_function_by_name(name: str):
         "outputs": ["y"]
     }
 
+
+@app.put("/functions/{fid}", response_model=Function)
+async def update_function(fid: str, f: FunctionUpdate):
+    if fid not in functions:
+        raise HTTPException(status_code=404, detail="Function not found")
+
+    func = functions[fid]
+
+    # обновление имени
+    if f.name and f.name != func.name:
+        if f.name in functions_by_name:
+            raise HTTPException(status_code=400, detail="Function name already exists")
+        del functions_by_name[func.name]
+        func.name = f.name
+        functions_by_name[f.name] = fid
+
+    if f.expression is not None:
+        func.expression = f.expression
+
+    if f.params is not None:
+        func.params = f.params
+
+    functions[fid] = func
+    save_to_disk()
+    return func
+
+
+@app.put("/functions/by-name/{name}", response_model=Function)
+async def update_function_by_name(name: str, f: FunctionUpdate):
+    if name not in functions_by_name:
+        raise HTTPException(status_code=404, detail="Function not found")
+
+    fid = functions_by_name[name]
+    return await update_function(fid, f)
 
 
 @app.delete("/functions/{fid}")

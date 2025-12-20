@@ -21,10 +21,11 @@
   },
   {
     "name": "linear",
-    "expression": "a*x + b",
+    "expression": "a*x + b + c",
     "params": {
-      "a": 2.0,
-      "b": 1.0
+      "a": 3.0,
+      "b": 2.0,
+      "c": 1.0
     },
     "id": "25f7c7ba-3852-47ab-9347-f3b48c90ed24"
   }
